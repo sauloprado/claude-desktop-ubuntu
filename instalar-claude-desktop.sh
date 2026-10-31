@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 # =============================================================================
 #  instalar-claude-desktop.sh
-#  Instala o Claude Desktop (beta Linux) no Linux Mint / Ubuntu / Debian
+#  Instala o Claude Desktop (beta Linux) no Ubuntu, Linux Mint e Debian
+#  pelo repositório apt OFICIAL da Anthropic
+#  Projeto: https://github.com/sauloprado/claude-desktop-ubuntu
 #  Fonte: https://code.claude.com/docs/en/desktop-linux
 #
-#  Uso:  bash instalar-claude-desktop.sh          (NÃO rode com sudo)
+#  Uso:  bash instalar-claude-desktop.sh                (NÃO rode com sudo)
 #        bash instalar-claude-desktop.sh --sem-cowork   (pula ajustes de VM)
 #
 #  O script é idempotente: pode ser executado de novo sem problemas.
@@ -33,6 +35,8 @@ PRECISA_RELOGAR=0
 azul "Verificando o sistema"
 
 [[ $EUID -eq 0 ]] && erro "Não rode como root/sudo. Execute como seu usuário: bash $0"
+command -v apt-get >/dev/null && command -v dpkg >/dev/null \
+  || erro "Sistema sem apt/dpkg. No Fedora use: https://github.com/sauloprado/claude-desktop-fedora"
 command -v sudo >/dev/null || erro "sudo não encontrado."
 sudo -v || erro "Não foi possível obter permissão de sudo."
 
@@ -47,7 +51,7 @@ BASE="${UBUNTU_CODENAME:-${VERSION_CODENAME:-desconhecida}}"
 echo "  Distribuição: ${PRETTY_NAME:-?}  (base: $BASE)"
 case "$BASE" in
   focal|bionic|xenial|bullseye|buster)
-    erro "Base '$BASE' é antiga demais (precisa libc6 >= 2.34). Use Mint 21+ / Ubuntu 22.04+." ;;
+    erro "Base '$BASE' é antiga demais (precisa libc6 >= 2.34). Use Ubuntu 22.04+, Mint 21+ ou Debian 12+." ;;
   *)
     verde "Base compatível" ;;
 esac
